@@ -15,23 +15,31 @@ interface FileUploadProps {
   fileType?: "image" | "video";
 }
 
-const FileUpload = ({ onSuccess, onProgress, fileType = "video" }: FileUploadProps) => {
+const FileUpload = ({
+  onSuccess,
+  onProgress,
+  fileType = "video",
+}: FileUploadProps) => {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const validateFile = (file: File) => {
+  // ✅ Validate file type and size
+  const validateFile = (file: File): boolean => {
     if (fileType === "video" && !file.type.startsWith("video/")) {
-      setError("Please upload a valid video file");
+      setError("Please upload a valid video file.");
       return false;
     }
     if (file.size > 100 * 1024 * 1024) {
-      setError("File size must be less than 100 MB");
+      setError("File size must be less than 100MB.");
       return false;
     }
     return true;
   };
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  // ✅ Handle file input change and perform upload
+  const handleFileChange = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ): Promise<void> => {
     const file = e.target.files?.[0];
     if (!file || !validateFile(file)) return;
 
@@ -56,9 +64,11 @@ const FileUpload = ({ onSuccess, onProgress, fileType = "video" }: FileUploadPro
           }
         },
       });
+
+      console.info("[UPLOAD_SUCCESS]", res);
       onSuccess(res);
-    } catch (error) {
-      console.error("Upload failed", error);
+    } catch (err) {
+      console.error("[UPLOAD_ERROR]", err);
       setError("Upload failed. Please try again.");
     } finally {
       setUploading(false);
@@ -67,7 +77,7 @@ const FileUpload = ({ onSuccess, onProgress, fileType = "video" }: FileUploadPro
 
   return (
     <div className="space-y-2">
-      <label className="btn btn-primary">
+      <label className="btn btn-primary cursor-pointer">
         Select {fileType} File
         <input
           type="file"
@@ -76,8 +86,15 @@ const FileUpload = ({ onSuccess, onProgress, fileType = "video" }: FileUploadPro
           onChange={handleFileChange}
         />
       </label>
-      {uploading && <span className="loading loading-spinner text-primary"></span>}
-      {error && <p className="text-error text-sm">{error}</p>}
+
+      {uploading && (
+        <div className="flex items-center gap-2">
+          <span className="loading loading-spinner text-primary" />
+          <span className="text-sm text-primary">Uploading...</span>
+        </div>
+      )}
+
+      {error && <p className="text-sm text-error">{error}</p>}
     </div>
   );
 };

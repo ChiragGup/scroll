@@ -1,9 +1,10 @@
 "use client";
+
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { useState } from "react";
 
-function LoginPage() {
+export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
@@ -18,7 +19,7 @@ function LoginPage() {
     });
 
     if (result?.error) {
-      console.log(result.error);
+      console.error(result.error);
     } else {
       router.push("/");
     }
@@ -27,10 +28,16 @@ function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-blue-100 via-purple-100 to-pink-100 p-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 space-y-6">
-        <h1 className="text-3xl font-bold text-center text-gray-800">Welcome Back 👋</h1>
+        <h1 className="text-3xl font-bold text-center text-gray-800">
+          Welcome Back 👋
+        </h1>
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="email" className="block mb-1 text-sm font-medium text-gray-600">
+            <label
+              htmlFor="email"
+              className="block mb-1 text-sm font-medium text-gray-600"
+            >
               Email
             </label>
             <input
@@ -43,8 +50,12 @@ function LoginPage() {
               required
             />
           </div>
+
           <div>
-            <label htmlFor="password" className="block mb-1 text-sm font-medium text-gray-600">
+            <label
+              htmlFor="password"
+              className="block mb-1 text-sm font-medium text-gray-600"
+            >
               Password
             </label>
             <input
@@ -57,6 +68,7 @@ function LoginPage() {
               required
             />
           </div>
+
           <button
             type="submit"
             className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-blue-500 hover:to-purple-500 text-white py-2 rounded-xl transition-all duration-300 font-semibold"
@@ -64,9 +76,11 @@ function LoginPage() {
             Login
           </button>
         </form>
+
         <div className="text-center text-sm text-gray-600">
           Don&apos;t have an account?{" "}
           <button
+            type="button"
             onClick={() => router.push("/register")}
             className="text-blue-600 hover:underline font-medium"
           >
@@ -77,5 +91,3 @@ function LoginPage() {
     </div>
   );
 }
-
-export default LoginPage;
